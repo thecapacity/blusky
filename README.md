@@ -8,8 +8,8 @@ One of the best ways to understand the different data structures underlying any 
 
 1. Get your bluesky username and password and add them to a `.env` file (see the `.env.example` file for structure)
 2. pip/uv install dependencies from `pyproject.toml`
-3. Hit the API by running data on your follower/follow graph to start with
-4. Check the available endpoints. 
+3. `python get_followers.py` / `uv run get_followers.py` - You can change the number of followers/follows you'd like by passing `max_items`
+4. Try some more [endpoints!](https://docs.bsky.app/docs/category/http-reference)
 
 
 
