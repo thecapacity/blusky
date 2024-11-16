@@ -44,9 +44,7 @@ def bsky_get_follows_simple(client):
         print(follow.did, follow.handle, follow.created_at)
 
 
-def bsky_get_follows_paginated(
-    client: Client, config=None
-) -> dict[str, str]:
+def bsky_get_follows_paginated(client: Client, config=None) -> dict[str, str]:
     """
     Gets all the accounts you've followed from data via your PDS
     """
@@ -86,9 +84,8 @@ def bsky_get_follows_paginated(
 
     return follow_dict
 
-def bsky_get_followers_paginated(
-    client: Client, config=None
-) -> dict[str, str]:
+
+def bsky_get_followers_paginated(client: Client, config=None) -> dict[str, str]:
     """
     Gets all the accounts that have followed you
     """
@@ -131,8 +128,6 @@ def bsky_get_followers_paginated(
     return follower_dict
 
 
-
-
 if __name__ == "__main__":
     # login
     profile, client = get_bsky_client(BSKY_USER, BSKY_PWD)
@@ -140,7 +135,11 @@ if __name__ == "__main__":
     logger.info(f"Welcome {profile.display_name}")
 
     # get 100 follows, if limit=None will get all
-    pp.pprint(bsky_get_follows_paginated(client, config=PaginationConfig(max_items=300)))
+    pp.pprint(
+        bsky_get_follows_paginated(client, config=PaginationConfig(max_items=300))
+    )
 
     # get 100 followers, if limit=None will get all
-    pp.pprint(bsky_get_followers_paginated(client, config=PaginationConfig(max_items=100)))
+    pp.pprint(
+        bsky_get_followers_paginated(client, config=PaginationConfig(max_items=100))
+    )
