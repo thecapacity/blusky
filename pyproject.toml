@@ -1,0 +1,10 @@
+[project]
+name = "blusky"
+version = "0.1.0"
+description = "Playing around with bluesky sdk"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "atproto>=0.0.55",
+    "python-dotenv>=1.0.1",
+]
