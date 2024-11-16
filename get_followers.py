@@ -20,7 +20,7 @@ class PaginationConfig:
 
     batch_size: int = 100
     rate_limit_delay: float = 0.5
-    max_items: typing.Optional[int] = None
+    max_items: int = 1
 
 
 def get_bsky_client(user: str, pwd: str):
@@ -45,27 +45,24 @@ def bsky_get_follows_simple(client):
 
 
 def bsky_get_follows_paginated(
-    client: Client, limit: int = None, config=None
+    client: Client, config=None
 ) -> dict[str, str]:
     """
     Gets all the accounts you've followed from data via your PDS
     """
     if config is None:
         config = PaginationConfig()
-        config.max_items = limit
 
     items_from_api = 0
     cursor = None
     follow_dict = defaultdict(str)
 
     while True:
-        if config.max_items and items_from_api >= config.max_items:
+        if items_from_api >= config.max_items:
             break
 
-        batch_limit = config.batch_size
-        if config.max_items:
-            remaining = config.max_items - items_from_api
-            batch_limit = min(config.batch_size, remaining)
+        remaining = config.max_items - items_from_api
+        batch_limit = min(config.batch_size, remaining)
 
         # Fetch the current page
         response = client.get_follows(actor=BSKY_USER, cursor=cursor, limit=batch_limit)
@@ -78,7 +75,7 @@ def bsky_get_follows_paginated(
 
             items_from_api += 1
 
-            if config.max_items and items_from_api >= config.max_items:
+            if items_from_api >= config.max_items:
                 return follow_dict
 
         cursor = response.cursor
@@ -89,29 +86,25 @@ def bsky_get_follows_paginated(
 
     return follow_dict
 
-
 def bsky_get_followers_paginated(
-    client: Client, limit: int = None, config=None
+    client: Client, config=None
 ) -> dict[str, str]:
     """
-    Gets all the accounts that have followed you along with their creation date
+    Gets all the accounts that have followed you
     """
     if config is None:
         config = PaginationConfig()
-        config.max_items = limit
 
     items_from_api = 0
     cursor = None
     follower_dict = defaultdict(str)
 
     while True:
-        if config.max_items and items_from_api >= config.max_items:
+        if items_from_api >= config.max_items:
             break
 
-        batch_limit = config.batch_size
-        if config.max_items:
-            remaining = config.max_items - items_from_api
-            batch_limit = min(config.batch_size, remaining)
+        remaining = config.max_items - items_from_api
+        batch_limit = min(config.batch_size, remaining)
 
         # Fetch the current page
         response = client.get_followers(
@@ -126,7 +119,7 @@ def bsky_get_followers_paginated(
 
             items_from_api += 1
 
-            if config.max_items and items_from_api >= config.max_items:
+            if items_from_api >= config.max_items:
                 return follower_dict
 
         cursor = response.cursor
@@ -138,6 +131,8 @@ def bsky_get_followers_paginated(
     return follower_dict
 
 
+
+
 if __name__ == "__main__":
     # login
     profile, client = get_bsky_client(BSKY_USER, BSKY_PWD)
@@ -145,7 +140,7 @@ if __name__ == "__main__":
     logger.info(f"Welcome {profile.display_name}")
 
     # get 100 follows, if limit=None will get all
-    pp.pprint(bsky_get_follows_paginated(client, limit=100))
+    pp.pprint(bsky_get_follows_paginated(client, config=PaginationConfig(max_items=300)))
 
     # get 100 followers, if limit=None will get all
-    pp.pprint(bsky_get_followers_paginated(client, limit=100))
+    pp.pprint(bsky_get_followers_paginated(client, config=PaginationConfig(max_items=100)))
