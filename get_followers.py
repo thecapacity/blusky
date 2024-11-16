@@ -147,5 +147,5 @@ if __name__ == "__main__":
     # get 100 follows, if limit=None will get all
     pp.pprint(bsky_get_follows_paginated(client, limit=100))
 
-    # get 100 follows, if limit=None will get all
+    # get 100 followers, if limit=None will get all
     pp.pprint(bsky_get_followers_paginated(client, limit=100))
