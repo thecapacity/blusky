@@ -1,17 +1,11 @@
-from atproto import Client
 import os
-from dotenv import load_dotenv
 from loguru import logger
 from collections import defaultdict
 from time import sleep
 from dataclasses import dataclass
-import typing
-import pprint
-
-# Meta Config
-pp = pprint.PrettyPrinter(indent=4)
-BSKY_USER = os.getenv("BSKY_USER")
-BSKY_PWD = os.getenv("BSKY_PWD")
+import pprint as pp
+from proto_client import ProtoClient
+from atproto import Client
 
 
 @dataclass
@@ -23,28 +17,18 @@ class PaginationConfig:
     max_items: int = 1
 
 
-def get_bsky_client(user: str, pwd: str):
-    """
-    set your env variables in your .env file (your bsky login)
-    """
-    load_dotenv()
-    client = Client()
-    profile = client.login(user, pwd)
-    return profile, client
-
-
 def bsky_get_follows_simple(client):
     """
     Simple method to get follows at pagination limit
     """
-    follows = client.get_follows(BSKY_USER)
+    follows = client.get_follows(os.BSKY_USER)
     follow_list = follows.follows
 
     for follow in follow_list:
         print(follow.did, follow.handle, follow.created_at)
 
 
-def bsky_get_follows_paginated(client: Client, config=None) -> dict[str, str]:
+def bsky_get_follows_paginated(client:Client, user:str, config=None ) -> dict[str, str]:
     """
     Gets all the accounts you've followed from data via your PDS
     """
@@ -63,7 +47,7 @@ def bsky_get_follows_paginated(client: Client, config=None) -> dict[str, str]:
         batch_limit = min(config.batch_size, remaining)
 
         # Fetch the current page
-        response = client.get_follows(actor=BSKY_USER, cursor=cursor, limit=batch_limit)
+        response = client.get_follows(actor=user, cursor=cursor, limit=batch_limit)
 
         for follow in response.follows:
             follow_dict[follow.did] = {
@@ -85,7 +69,7 @@ def bsky_get_follows_paginated(client: Client, config=None) -> dict[str, str]:
     return follow_dict
 
 
-def bsky_get_followers_paginated(client: Client, config=None) -> dict[str, str]:
+def bsky_get_followers_paginated(client:Client, user:str, config=None) -> dict[str, str]:
     """
     Gets all the accounts that have followed you
     """
@@ -105,7 +89,7 @@ def bsky_get_followers_paginated(client: Client, config=None) -> dict[str, str]:
 
         # Fetch the current page
         response = client.get_followers(
-            actor=BSKY_USER, cursor=cursor, limit=batch_limit
+            actor=user, cursor=cursor, limit=batch_limit
         )
 
         for follower in response.followers:
@@ -130,16 +114,17 @@ def bsky_get_followers_paginated(client: Client, config=None) -> dict[str, str]:
 
 if __name__ == "__main__":
     # login
-    profile, client = get_bsky_client(BSKY_USER, BSKY_PWD)
+    profile, client = ProtoClient().get_bsky_client()
+    user = ProtoClient().user
     # confirm connection
     logger.info(f"Welcome {profile.display_name}")
 
     # get 100 follows, if limit=None will get all
     pp.pprint(
-        bsky_get_follows_paginated(client, config=PaginationConfig(max_items=100))
+        bsky_get_follows_paginated(client, user=user, config=PaginationConfig(max_items=100))
     )
 
     # get 100 followers, if limit=None will get all
     pp.pprint(
-        bsky_get_followers_paginated(client, config=PaginationConfig(max_items=100))
+        bsky_get_followers_paginated(client, user=user, config=PaginationConfig(max_items=100))
     )
