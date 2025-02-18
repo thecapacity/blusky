@@ -21,7 +21,7 @@ def bsky_get_follows_simple(client):
     """
     Simple method to get follows at pagination limit
     """
-    follows = client.get_follows(os.BSKY_USER)
+    follows = client.get_follows(os.getenv('BSKY_USER'))
     follow_list = follows.follows
 
     for follow in follow_list:
