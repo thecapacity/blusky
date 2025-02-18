@@ -9,8 +9,10 @@ class ProtoClient():
     """
 
     def __init__(self):
-
-
+        load_dotenv()
+        self.client = None
+        self.profile = None
+        
     def get_bsky_client(self):
         """
         set your env variables in your .env file (your bsky login)
