@@ -17,7 +17,6 @@ class ProtoClient():
         """
         set your env variables in your .env file (your bsky login)
         """
-        load_dotenv()
         client = Client()
         profile = client.login(self.user, self.pwd)
         return profile, client
