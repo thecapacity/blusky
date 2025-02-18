@@ -124,8 +124,3 @@ if __name__ == "__main__":
     pp.pprint(
         bsky_get_follows_paginated(client, user=user, config=PaginationConfig(max_items=100))
     )
-
-    # get 100 followers, if limit=None will get all
-    pp.pprint(
-        bsky_get_followers_paginated(client, user=user, config=PaginationConfig(max_items=100))
-    )
