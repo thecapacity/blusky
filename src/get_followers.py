@@ -115,9 +115,10 @@ def bsky_get_followers_paginated(client:Client, user:str, config=None) -> dict[s
 if __name__ == "__main__":
     # login
     profile, client = ProtoClient().get_bsky_client()
-    user = ProtoClient().user
+    user = profile.handle
+    print('Welcome,', user)
     # confirm connection
-    logger.info(f"Welcome {profile.display_name}")
+    logger.info(f"Welcome {profile.display_name} aka {profile.handle}")
 
     # get 100 follows, if limit=None will get all
     pp.pprint(
