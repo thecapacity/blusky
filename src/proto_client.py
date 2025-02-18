@@ -9,8 +9,6 @@ class ProtoClient():
     """
 
     def __init__(self):
-        self.user = os.getenv("BSKY_USER")
-        self.pwd = os.getenv("BSKY_PWD")
 
 
     def get_bsky_client(self):
