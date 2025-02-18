@@ -18,5 +18,5 @@ class ProtoClient():
         set your env variables in your .env file (your bsky login)
         """
         client = Client()
-        profile = client.login(self.user, self.pwd)
+        profile = client.login(os.getenv("BSKY_USER"), os.getenv("BSKY_PWD"))
         return profile, client
