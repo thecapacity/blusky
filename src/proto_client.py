@@ -19,4 +19,7 @@ class ProtoClient():
         """
         client = Client()
         profile = client.login(os.getenv("BSKY_USER"), os.getenv("BSKY_PWD"))
+        self.client = client
+        self.profile = profile
+        
         return profile, client
